@@ -70,6 +70,7 @@ variable "protected_settings_from_key_vault" {
     source_vault_id = string
   })
   description = "(Optional) Map of protected settings from Key Vault. Can not be used with protected_settings"
+  default     = null
 }
 
 variable "tags" {
