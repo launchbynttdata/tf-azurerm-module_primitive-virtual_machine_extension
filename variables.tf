@@ -44,10 +44,11 @@ variable "auto_upgrade_minor_version" {
 variable "automatic_upgrade_enabled" {
   type        = bool
   description = "(Optional) Should the Extension be automatically updated whenever the Publisher releases a new version of this VM Extension?"
+  default     = false
 }
 
 variable "settings" {
-  type        = bool
+  type        = string
   description = "(Optional) The settings passed to the extension, these are specified as a JSON object in a string. Changing this forces a new resource to be created."
 }
 
