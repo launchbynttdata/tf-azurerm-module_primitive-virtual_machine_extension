@@ -11,12 +11,23 @@
 // limitations under the License.
 
 resource "azurerm_virtual_machine_extension" "virtual_machine_extension" {
-  name                       = var.name
-  virtual_machine_id         = var.virtual_machine_id
-  publisher                  = var.publisher
-  type                       = var.type
-  type_handler_version       = var.type_handler_version
-  auto_upgrade_minor_version = var.auto_upgrade_minor_version
+  name                        = var.name
+  virtual_machine_id          = var.virtual_machine_id
+  publisher                   = var.publisher
+  type                        = var.type
+  type_handler_version        = var.type_handler_version
+  auto_upgrade_minor_version  = var.auto_upgrade_minor_version
+  automatic_upgrade_enabled   = var.automatic_upgrade_enabled
+  failure_suppression_enabled = var.failure_suppression_enabled
+  protected_settings          = var.protected_settings
+
+  dynamic "protected_settings_from_key_vault" {
+    for_each = var.protected_settings_from_key_vault != null ? var.protected_settings_from_key_vault : {}
+    content {
+      secret_url      = each.secret_url
+      source_vault_id = each.source_vault_id
+    }
+  }
 
   settings = var.settings
   tags     = var.tags
