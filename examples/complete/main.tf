@@ -62,11 +62,11 @@ module "network_interface" {
   location            = var.location
   resource_group_name = local.resource_group_name
 
-  ip_configuration = {
+  ip_configuration = [{
     name                          = "internal"
     subnet_id                     = module.virtual_network.vnet_subnets["virtual_network"][0]
     private_ip_address_allocation = "Dynamic"
-  }
+  }]
   depends_on = [module.resource_group, module.virtual_network]
 }
 
