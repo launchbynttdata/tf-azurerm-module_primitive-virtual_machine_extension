@@ -4,7 +4,7 @@
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0, < 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 3.77 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.6 |
@@ -12,24 +12,24 @@
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_network_interface"></a> [network\_interface](#module\_network\_interface) | terraform.registry.launch.nttdata.com/module_primitive/network_interface/azurerm | ~> 1.0 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm | ~> 1.2 |
 | <a name="module_resource_names"></a> [resource\_names](#module\_resource\_names) | terraform.registry.launch.nttdata.com/module_library/resource_name/launch | ~> 2.0 |
-| <a name="module_virtual_machine"></a> [virtual\_machine](#module\_virtual\_machine) | git::https://github.com/launchbynttdata/tf-azurerm-module_primitive-windows_virtual_machine.git | feat%21/copier-conversion |
+| <a name="module_virtual_machine"></a> [virtual\_machine](#module\_virtual\_machine) | terraform.registry.launch.nttdata.com/module_primitive/windows_virtual_machine/azurerm | ~> 1.1 |
 | <a name="module_virtual_machine_extension"></a> [virtual\_machine\_extension](#module\_virtual\_machine\_extension) | ../.. | n/a |
 | <a name="module_virtual_network"></a> [virtual\_network](#module\_virtual\_network) | terraform.registry.launch.nttdata.com/module_collection/virtual_network/azurerm | ~> 1.2 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [random_string.admin_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_admin_username"></a> [admin\_username](#input\_admin\_username) | Username of the administrative account on the virtual machine | `string` | n/a | yes |
 | <a name="input_class_env"></a> [class\_env](#input\_class\_env) | (Required) Environment where resource is going to be deployed. For example. dev, qa, uat | `string` | `"dev"` | no |
 | <a name="input_extension_publisher"></a> [extension\_publisher](#input\_extension\_publisher) | The publisher of the extension, available publishers can be found by using the Azure CLI. Changing this forces a new resource to be created. Defaults to 'Microsoft.Compute' | `string` | `"Microsoft.Compute"` | no |
@@ -53,7 +53,7 @@
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_admin_password"></a> [admin\_password](#output\_admin\_password) | Password of the administrative user |
 | <a name="output_admin_username"></a> [admin\_username](#output\_admin\_username) | Login of the administrative user |
 | <a name="output_extension_id"></a> [extension\_id](#output\_extension\_id) | ID of the extension |
