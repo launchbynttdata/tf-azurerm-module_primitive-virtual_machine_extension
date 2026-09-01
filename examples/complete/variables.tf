@@ -153,20 +153,10 @@ variable "admin_username" {
   type        = string
 }
 
-// Admin password generation
+// Admin password generation (Azure requires 3 of 4: lower, upper, digit, special other than "_")
 variable "length" {
   type    = number
   default = 24
-}
-
-variable "number" {
-  type    = bool
-  default = true
-}
-
-variable "special" {
-  type    = bool
-  default = false
 }
 
 // Networking
@@ -178,26 +168,29 @@ variable "network_map" {
     location            = optional(string)
     vnet_name           = optional(string)
     address_space       = list(string)
-    subnet_names        = list(string)
-    subnet_prefixes     = list(string)
-    bgp_community       = string
-    ddos_protection_plan = object(
+    subnets = map(object({
+      prefix = string
+      delegation = optional(map(object({
+        service_name    = string
+        service_actions = list(string)
+      })), {})
+      service_endpoints                             = optional(list(string), []),
+      private_endpoint_network_policies_enabled     = optional(bool, false)
+      private_link_service_network_policies_enabled = optional(bool, false)
+      network_security_group_id                     = optional(string, null)
+      route_table_id                                = optional(string, null)
+    }))
+    bgp_community = optional(string, null)
+    ddos_protection_plan = optional(object(
       {
         enable = bool
         id     = string
       }
-    )
-    dns_servers                                           = list(string)
-    nsg_ids                                               = map(string)
-    route_tables_ids                                      = map(string)
-    subnet_delegation                                     = map(map(any))
-    subnet_enforce_private_link_endpoint_network_policies = map(bool)
-    subnet_enforce_private_link_service_network_policies  = map(bool)
-    subnet_service_endpoints                              = map(list(string))
-    tags                                                  = map(string)
-    tracing_tags_enabled                                  = bool
-    tracing_tags_prefix                                   = string
-    use_for_each                                          = bool
+    ), null)
+    dns_servers      = optional(list(string), [])
+    nsg_ids          = optional(map(string), {})
+    route_tables_ids = optional(map(string), {})
+    tags             = optional(map(string), {})
   }))
 }
 

@@ -10,45 +10,60 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-resource "random_string" "admin_password" {
-  length  = var.length
-  numeric = var.number
-  special = var.special
+resource "random_password" "admin_password" {
+  length           = var.length
+  special          = true
+  min_lower        = 1
+  min_upper        = 1
+  min_numeric      = 1
+  min_special      = 1
+  override_special = "!@#$%*"
 }
 
 module "virtual_machine_extension" {
   source = "../.."
 
   name                 = local.virtual_machine_extension_name
-  virtual_machine_id   = module.virtual_machine.id
+  virtual_machine_id   = azurerm_windows_virtual_machine.this.id
   publisher            = var.extension_publisher
   type                 = var.extension_type
   type_handler_version = var.extension_type_version
   settings             = var.extension_settings
 }
 
-module "virtual_machine" {
-  source  = "terraform.registry.launch.nttdata.com/module_primitive/windows_virtual_machine/azurerm"
-  version = "~> 1.0"
+# Published windows_virtual_machine still requires Terraform <= 1.5.5; create
+# the VM inline so example CI can use the skeleton Terraform 1.10.x toolchain.
+resource "azurerm_windows_virtual_machine" "this" {
+  name                  = local.virtual_machine_name
+  resource_group_name   = local.resource_group_name
+  location              = var.location
+  size                  = var.size
+  admin_username        = var.admin_username
+  admin_password        = random_password.admin_password.result
+  network_interface_ids = [module.network_interface.id]
 
-  name                = local.virtual_machine_name
-  resource_group_name = local.resource_group_name
-  location            = var.location
-  size                = var.size
+  os_disk {
+    caching              = var.os_disk.caching
+    storage_account_type = var.os_disk.storage_account_type
+  }
 
-  admin_username = var.admin_username
-  admin_password = random_string.admin_password.result
+  source_image_reference {
+    publisher = var.source_image_reference.publisher
+    offer     = var.source_image_reference.offer
+    sku       = var.source_image_reference.sku
+    version   = var.source_image_reference.version
+  }
 
-  os_disk                = var.os_disk
-  source_image_reference = var.source_image_reference
-  network_interface_ids  = [module.network_interface.id]
+  lifecycle {
+    ignore_changes = [admin_password]
+  }
 
   depends_on = [module.resource_group]
 }
 
 module "resource_group" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm"
-  version = "~> 1.0"
+  version = "~> 1.2"
 
   name     = local.resource_group_name
   location = var.location
@@ -67,7 +82,7 @@ module "network_interface" {
 
   ip_configuration = [{
     name                          = "internal"
-    subnet_id                     = module.virtual_network.vnet_subnets["virtual_network"][0]
+    subnet_id                     = module.virtual_network.vnet_subnet_name_id_map["virtual_network"]["example_subnet"]
     private_ip_address_allocation = "Dynamic"
   }]
   depends_on = [module.resource_group, module.virtual_network]
@@ -75,7 +90,7 @@ module "network_interface" {
 
 module "virtual_network" {
   source  = "terraform.registry.launch.nttdata.com/module_collection/virtual_network/azurerm"
-  version = "~> 1.0"
+  version = "~> 1.2"
 
   network_map = local.modified_network_map
   depends_on  = [module.resource_group]
@@ -84,7 +99,7 @@ module "virtual_network" {
 # This module generates the resource-name of resources based on resource_type, naming_prefix, env etc.
 module "resource_names" {
   source   = "terraform.registry.launch.nttdata.com/module_library/resource_name/launch"
-  version  = "~> 1.0"
+  version  = "~> 2.0"
   for_each = var.resource_names_map
 
   region                  = join("", split("-", var.location))
