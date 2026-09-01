@@ -153,20 +153,10 @@ variable "admin_username" {
   type        = string
 }
 
-// Admin password generation
+// Admin password generation (Azure requires 3 of 4: lower, upper, digit, special other than "_")
 variable "length" {
   type    = number
   default = 24
-}
-
-variable "number" {
-  type    = bool
-  default = true
-}
-
-variable "special" {
-  type    = bool
-  default = false
 }
 
 // Networking

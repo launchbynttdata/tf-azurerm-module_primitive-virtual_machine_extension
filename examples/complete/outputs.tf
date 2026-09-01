@@ -12,7 +12,7 @@
 
 output "vm_id" {
   description = "ID of the Virtual Machine"
-  value       = module.virtual_machine.id
+  value       = azurerm_windows_virtual_machine.this.id
 }
 
 output "extension_id" {
@@ -32,12 +32,12 @@ output "name" {
 
 output "private_ip_addresses" {
   description = "Private IP Addresses"
-  value       = module.virtual_machine.private_ip_addresses
+  value       = azurerm_windows_virtual_machine.this.private_ip_addresses
 }
 
 output "public_ip_addresses" {
   description = "Public IP Addresses"
-  value       = module.virtual_machine.public_ip_addresses
+  value       = azurerm_windows_virtual_machine.this.public_ip_addresses
 }
 
 output "resource_group_name" {
@@ -52,6 +52,6 @@ output "admin_username" {
 
 output "admin_password" {
   description = "Password of the administrative user"
-  value       = random_string.admin_password.result
+  value       = random_password.admin_password.result
   sensitive   = true
 }
