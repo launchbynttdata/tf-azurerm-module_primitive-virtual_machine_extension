@@ -28,7 +28,8 @@ module "virtual_machine_extension" {
 }
 
 module "virtual_machine" {
-  source = "git::https://github.com/launchbynttdata/tf-azurerm-module_primitive-windows_virtual_machine.git?ref=feat%21/copier-conversion"
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/windows_virtual_machine/azurerm"
+  version = "~> 1.0"
 
   name                = local.virtual_machine_name
   resource_group_name = local.resource_group_name
